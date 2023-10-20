@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "../../../public/assists/logoAsset-3.png";
+import Logo from "../../../public/assists/a4.png";
 
 const Footer = () => {
   return (
@@ -19,7 +19,7 @@ const Footer = () => {
             </Link>
 
             <p className="mt-4 text-center text-white lg:text-left lg:text-lg">
-              The MEDDIC sales qualification is a framework that helps sales
+              FUrious Fitness sales qualification is a framework that helps sales
               teams to qualify their sales opportunities by focusing on six
               important elements which are the: Metrics, Economic Buyer,
               Decision Criteria, Decision Process, Identify Pain, and Champion.
@@ -279,21 +279,21 @@ const Footer = () => {
 
         <div className="mt-16 border-t border-gray-100 pt-8">
           <p className="text-center text-xs/relaxed text-white">
-            © Company 2022. All rights reserved.
+            © Company 2023. All rights reserved.
             <br />
             Created with
             <a
               href=""
               className="text-white underline transition hover:text-white/75"
             >
-              Laravel
+              Nodejs
             </a>
             and
             <a
               href=""
               className="text-white underline transition hover:text-white/75"
             >
-              Laravel Livewire
+              Next js
             </a>
             .
           </p>

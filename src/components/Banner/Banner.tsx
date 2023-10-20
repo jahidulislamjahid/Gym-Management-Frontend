@@ -1,27 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import doctor from "../../../public/assists/vecteezy_doctor-3d-icon-illustration_28238992_258.png";
-import Care from "../../../public/assists/stock-vector-hospital-building-icon-vector-logo-1727598499-removebg-preview.png";
-import Phone from "../../../public/assists/phone-removebg-preview.png";
+import doctor from "../../../public/assists/a4.png";
+import Care from "../../../public/assists/a3.png";
+import Phone from "../../../public/assists/a3.png";
 import Image from "next/image";
 
 const Banner = () => {
   const BannerData = [
     {
-      title: "Expert Doctors",
+      title: "Expert Trainers",
       description:
-        "Our doctors are highly qualified and experienced in their respective fields.",
+        "Our trainers are highly qualified and experienced in their respective fields.",
       image: doctor,
     },
     {
-      title: "Emergrncy Care",
-      description: "We are available for 24/7 for any emergency care.",
+      title: "Personal training",
+      description: "We are available for for any personal fitness trainig.",
       image: Care,
     },
     {
-      title: "24/7 Full Support",
+      title: "Female Security",
       description:
-        "Our support team is always available to help you with any queries.",
+        "Extra security for female members and seperate exercise hall for male and female",
       image: Phone,
     },
   ];

@@ -27,17 +27,16 @@ const UMTable = ({
 }: UMTableProps) => {
   const paginationConfig = showPagination
     ? {
-      pageSize: pageSize,
-      total: totalPages,
-      pageSizeOptions: [5, 10, 20],
-      showSizeChanger: showSizeChanger,
-      onChange: onPaginationChange,
-    }
+        pageSize: pageSize,
+        total: totalPages,
+        pageSizeOptions: [5, 10, 20],
+        showSizeChanger: showSizeChanger,
+        onChange: onPaginationChange,
+      }
     : false;
 
   return (
     <Table
-      style={{ alignItems: "center" }}
       loading={loading}
       columns={columns}
       dataSource={dataSource}

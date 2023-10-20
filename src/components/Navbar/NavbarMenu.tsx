@@ -1,4 +1,4 @@
-import { INavbarType } from "@/types/NavBarTypes";
+import { INavbarType } from "@/types/NavbarType";
 import Link from "next/link";
 import React from "react";
 import { Dropdown } from "antd";

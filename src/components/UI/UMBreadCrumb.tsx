@@ -13,7 +13,7 @@ const UMBreadCrumb = ({
   const breadCrumbItems = [
     {
       title: (
-        <Link href="/dashboard">
+        <Link href="/">
           <HomeOutlined />
         </Link>
       ),

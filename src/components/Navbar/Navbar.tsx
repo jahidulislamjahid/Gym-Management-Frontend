@@ -1,31 +1,40 @@
 "use client";
-
-import { authKey } from "@/constant/common";
-import { getUserInfo, removeUserInfo } from "@/services/auth.services";
-import { INavbarType } from "@/types/NavBarTypes";
-import { AppstoreOutlined, PhoneTwoTone } from "@ant-design/icons";
-import { Drawer } from "antd";
+import { INavbarType } from "@/types/NavbarType";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import AddToCart from "../AddToCart/AddToCart";
+import { useEffect, useState } from "react";
 import NavbarMenu from "./NavbarMenu";
-import Logo from "/public//assists/logo_Asset-1-1.png";
+import Logo from "/public//assists/a4.png";
+// import { PhoneTwoTone } from "@ant-design/icons";
+import { noImage } from "@/helpers/noImage/noImage";
+import { tokenKey } from "@/helpers/token/tokenKey";
+import {
+  getUserInfo,
+  isLoggedIn,
+  removeUserInfo,
+} from "@/services/auth.services";
+import { AppstoreOutlined } from "@ant-design/icons";
+import { Drawer, message } from "antd";
+import { useRouter } from "next/navigation";
+import AddToCard from "../AddToCard/AddToCard";
 
 const Navbar = () => {
-  const { firstName, lastName, userId, profileId, email, role } =
-    getUserInfo() as any;
-
+  const [open, setOpen] = useState(false);
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const router = useRouter();
 
-  const [open, setOpen] = useState<boolean>(false);
-  const [addToCart, setAddToCart] = useState<boolean>(false);
+  const [userLogged, setUserLogged] = useState(false);
 
-  const user = {
-    name: "John Doe",
-    email: "shadesh",
-  };
+  const userLoggedIn = isLoggedIn();
+  const user = getUserInfo() as any;
+
+  useEffect(() => {
+    if (userLoggedIn && user) {
+      setUserLogged(true);
+    } else {
+      setUserLogged(false);
+    }
+  }, [userLoggedIn, user]);
 
   const showDrawer = () => {
     setOpen(true);
@@ -53,25 +62,23 @@ const Navbar = () => {
           name: "Services",
           link: "/services",
         },
-        {
-          name: "Services Details",
-          link: "/services-details",
-        },
       ],
     },
     {
-      name: "Contact",
-      link: "/contact",
+      name: "Blogs",
+      link: "/blogs",
     },
   ];
 
-  const logOut = () => {
-    removeUserInfo(authKey);
+  const handleLogOut = () => {
+    removeUserInfo(tokenKey);
+    setUserLogged(false);
+    message.success("Logout Successfully");
     router.push("/login");
   };
 
   return (
-    <div className="py-[16px] border-b-2 borderColor common flex gap-3 items-center justify-between w-full bg-blue-200 text-black">
+    <div className="py-[16px] border-b-2 borderColor common flex gap-3 items-center justify-between w-full sticky top-0 bg-bgColor z-20">
       {/* logo */}
       <Link href={"/"} className="md:w-full">
         <Image
@@ -82,6 +89,7 @@ const Navbar = () => {
           className="md:w-[130px] md:h-[54px] w-[100px] h-[51px]"
         />
       </Link>
+
       {/* NavData */}
       <div className="md:flex hidden gap-5 w-full justify-between px-[50px]">
         {NavbarData?.map((nav: INavbarType, i: number) => (
@@ -89,24 +97,24 @@ const Navbar = () => {
         ))}
       </div>
 
-      {/* appoinment */}
-
+      {/* Appointment */}
       <div className="flex gap-5 items-center w-full justify-end  ">
         {/* emergengy call */}
-        <div className="hidden md:flex items-center gap-2 cursor-pointer ">
+        {/* <div className="hidden md:flex items-center gap-2 cursor-pointer ">
           <PhoneTwoTone className="text-primary" />
           <p>Emergency Call</p>
-        </div>
+        </div> */}
 
-        {/* apointment */}
-        <button
+        {/* Appointment */}
+        {/* <Link
+          href={"#appointment"}
           style={{
             boxShadow: " 3px 3px 3px 0px rgba(109,40,217)",
           }}
           className=" hidden md:block appointmentButton"
         >
-          Apointment{" "}
-        </button>
+          Appointment{" "}
+        </Link> */}
         {/* button and drower */}
         <>
           <button
@@ -122,23 +130,28 @@ const Navbar = () => {
             onClose={onClose}
             open={open}
             className="text-[20px] text-center"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "column",
-            }}
+          // style={{
+          //   display: "flex",
+          //   justifyContent: "space-between",
+          //   flexDirection: "column",
+          // }}
           >
-            {NavbarData?.map((nav: INavbarType, i: number) => (
-              <p key={i} className="text-[20px] my-[20px]">
-                name
-              </p>
-            ))}
+            <div className="flex flex-col items-center ">
+              {NavbarData?.map((nav: INavbarType, i: number) => (
+                <Link
+                  href={nav?.link}
+                  key={i}
+                  className="text-[20px] my-[10px] text-black"
+                >
+                  {nav.name}
+                </Link>
+              ))}
+            </div>
           </Drawer>
         </>
 
         {/* user */}
-
-        {userId && profileId ? (
+        {userLogged ? (
           <div className="flex items-center justify-center ">
             <div className=" relative inline-block text-left dropdown">
               <span className="rounded-md shadow-sm">
@@ -151,7 +164,7 @@ const Navbar = () => {
                 >
                   <Image
                     className="inline-block h-10 w-10 rounded-full ring-2 ring-white"
-                    src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={noImage}
                     alt=""
                     width={100}
                     height={100}
@@ -160,51 +173,46 @@ const Navbar = () => {
               </span>
               <div className="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
                 <div
-                  className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none"
+                  className="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none z-50"
                   aria-labelledby="headlessui-menu-button-1"
                   id="headlessui-menu-items-117"
                   role="menu"
                 >
-                  <div className="px-4 py-3">
+                  {/* <div className="px-4 py-3">
                     <p className="text-sm leading-5">Signed in as</p>
                     <p className="text-sm font-medium leading-5 text-gray-900 truncate">
-                      {email} <br /> ({firstName} {lastName})
+                      {user?.email}
                     </p>
-                  </div>
+                  </div> */}
                   <div className="py-1">
                     <Link
-                      href="/profile"
-                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
-                      role="menuitem"
-                    >
-                      Profile Settings
-                    </Link>
-                    <Link
                       href="/dashboard"
-                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
+                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:bg-gray-300 hover:text-black rounded "
                       role="menuitem"
                     >
                       Dashboard
                     </Link>
+                    <Link
+                      href={`/dashboard/profile`}
+                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:bg-gray-300 hover:text-black rounded "
+                      role="menuitem"
+                    >
+                      Profile Settings
+                    </Link>
+
+                    {/* user add to card */}
                     <button
-                      onClick={() => setAddToCart(true)}
-                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
+                      onClick={() => setIsCardOpen(true)}
+                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:bg-gray-300 hover:text-black rounded "
                       role="menuitem"
                     >
-                      Add To Cart
+                      My Cart
                     </button>
-                    <span
-                      role="menuitem"
-                      className="flex justify-between w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 cursor-not-allowed opacity-50"
-                      aria-disabled="true"
-                    >
-                      New feature (soon)
-                    </span>
                   </div>
                   <div className="py-1">
                     <button
-                      onClick={logOut}
-                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left"
+                      onClick={handleLogOut}
+                      className="text-gray-700 flex justify-between w-full px-4 py-2 text-sm leading-5 text-left hover:bg-red-500 hover:text-white rounded"
                       role="menuitem"
                     >
                       Sign out
@@ -218,20 +226,20 @@ const Navbar = () => {
           <Link href={"/login"}>
             <div className="relative inline-flex  group">
               <div className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
-              <a
-                href="#"
-                title="Get quote now"
+              <p
+                title="Login"
                 className="relative inline-flex items-center justify-center px-4 py-2 text-lg  text-white transition-all duration-200 bg-gray-700 font-pj rounded-xl "
                 role="button"
               >
                 Login
-              </a>
+              </p>
             </div>
           </Link>
         )}
-      </div>
 
-      {addToCart && <AddToCart open={addToCart} setOpen={setAddToCart} />}
+        {/* card */}
+        {userLogged && <AddToCard setOpen={setIsCardOpen} open={isCardOpen} />}
+      </div>
     </div>
   );
 };

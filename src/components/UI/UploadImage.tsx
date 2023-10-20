@@ -1,32 +1,32 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
-import { Upload, Progress, message, Modal } from "antd";
-import axios, { AxiosResponse } from "axios";
-import { useFormContext } from "react-hook-form";
 import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Progress, Upload, message } from "antd";
 import { RcFile, UploadFile } from "antd/es/upload";
-import Image from "next/image";
+import axios, { AxiosResponse } from "axios";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 type ImageUploadProps = {
   name: string;
-  defaultImage?: string;
+  updateImage?: string;
 };
 
-const UploadImage = ({ name, defaultImage }: ImageUploadProps) => {
-  const [progress, setProgress] = useState<number>(0);
-  const [defaultFileList, setDefaultFileList] = useState<UploadFile[]>(
-    defaultImage
+const UploadImage = ({ name, updateImage }: ImageUploadProps) => {
+  const [defaultFileList, setDefaultFileList] = useState<any[]>(
+    updateImage
       ? [
-        {
-          uid: "-1",
-          name: "image.png",
-          status: "done",
-          url: defaultImage,
-        },
-      ]
+          {
+            uid: "-1",
+            name: "image.png",
+            status: "done",
+            url: updateImage,
+          },
+        ]
       : []
   );
+  const [progress, setProgress] = useState<number>(0);
 
   const { setValue } = useFormContext();
 
@@ -107,7 +107,7 @@ const UploadImage = ({ name, defaultImage }: ImageUploadProps) => {
         {progress > 0 ? <Progress percent={progress} /> : null}
       </div>
       <Modal open={previewOpen} footer={null} onCancel={handleCancel} centered>
-        <Image alt="example" style={{ width: "100%" }} src={previewImage} />
+        <img alt="example" style={{ width: "100%" }} src={previewImage} />
       </Modal>
     </>
   );

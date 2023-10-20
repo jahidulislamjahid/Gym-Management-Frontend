@@ -1,60 +1,59 @@
 "use client";
-import Image from "next/image";
-import React, { useState } from "react";
-import InputField from "../InputField/InputField";
-import { useForm, SubmitHandler } from "react-hook-form";
-import TextArea from "antd/es/input/TextArea";
-import FormSelectField from "../Forms/FormSelectField";
-import { useCreateBookingMutation } from "@/Redux/api/features/bookingApi";
-import { useRouter } from "next/navigation";
-import { useGetSlotQuery } from "@/Redux/api/features/slotApi";
-import Form from "../Forms/Form";
-import FormInput from "../Forms/FormInput";
-import { useGetServiceQuery } from "@/Redux/api/features/serviceApi";
-import FormDatePicker from "../Forms/FormDatePicker";
-import { getUserInfo, isLoggedIn } from "@/services/auth.services";
-import { Button, Modal, message } from "antd";
-const { confirm } = Modal;
+
+import { useCreateBookingMutation } from "@/Redux/features/bookingApi/bookingApi";
+import { useGetServicesQuery } from "@/Redux/features/serviceApi/serviceApi";
+import { useGetSlotQuery } from "@/Redux/features/slotApi/slotApi";
+import { isLoggedIn } from "@/services/auth.services";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import { Modal, message } from "antd";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Form from "../Forms/Form";
+import FormDatePicker from "../Forms/FormDatePicker";
+import FormSelectField from "../Forms/FormSelectField";
+const { confirm } = Modal;
 
-const Apointment = () => {
-
+const Appointment = () => {
   const userLoggedIn = isLoggedIn();
 
   const query: Record<string, any> = {};
   const [searchTerm, setSearchTerm] = useState<string>("");
   query["searchTerm"] = searchTerm;
 
-  const { data: slotData, isLoading: slotLoading } = useGetSlotQuery({
-    ...query,
-  });
+  const { data: slotData, isLoading: slotLoading } = useGetSlotQuery(undefined);
 
-  const { data: serviceData, isLoading: serviceLoading } = useGetServiceQuery({
-    ...query,
-  });
+  const { data: serviceData, isLoading: serviceLoading } =
+    useGetServicesQuery(undefined);
 
   const [createBooking, { isLoading, isError }] = useCreateBookingMutation();
 
   const router = useRouter();
 
+  // const bookingOnSubmit = async (data: any) => {
+  //   message.loading("Creating new Service");
+
+  //   const BookingData = {
+  //     appointmentDate: data.appointmentDate,
+  //     slotId: data.slot.slotId,
+  //     serviceId: data.service.serviceId,
+  //   };
+  //   console.log(BookingData);
+  //   try {
+  //     const res = await createBooking(BookingData);
+
+  //     // @ts-ignore
+  //     if (res?.data && !isError) {
+  //       message.success("Booking created successfully");
+  //       router.push("/dashboard/booking/booking-list");
+  //     }
+  //   } catch (err: any) {
+  //     console.error(err?.data?.message);
+  //     message.error("something went wrong");
+  //   }
+  // };
+
   const bookingOnSubmit = async (data: any) => {
-    message.loading("Creating new Booking");
-
-    const dateString = data.appointmentDate?.$d;
-    const dateObject = new Date(dateString);
-
-    // Get ISO string
-    const isoString = dateObject.toISOString();
-
-    // console.log(isoString);
-
-    const BookingData = {
-      appointmentDate: isoString,
-      slotId: data.slot.slotId,
-      serviceId: data.service.serviceId,
-    };
-    console.log(BookingData);
-
     if (!userLoggedIn) {
       confirm({
         title: "Please Login First",
@@ -69,17 +68,30 @@ const Apointment = () => {
       return;
     } else {
       try {
+        const dateString = data.appointmentDate?.$d;
+        const dateObject = new Date(dateString);
+
+        // Get ISO string
+        const isoString = dateObject.toISOString();
+        console.log("isoString: ", isoString);
+
+        const BookingData = {
+          appointmentDate: isoString,
+          slotId: data.slot.slotId,
+          serviceId: data.service.serviceId,
+        };
+
         const res = await createBooking(BookingData).unwrap();
-        console.log(
-          "🚀 ~ file: FeedBackForum.tsx:35 ~ handleSubmit ~ res:",
-          res
-        );
+        console.log("res: ", res);
+
         if (res?.success) {
-          message.success("Feedback Submitted Successfully");
+          message.success(
+            "Slot added on your booking.admin will verified and confirm your booking"
+          );
         }
       } catch (error: any) {
-        console.error("Some thing was wrong");
-        message.error("Some thing was wrong");
+        console.error(error);
+        message.error(error?.data?.message);
       }
     }
   };
@@ -87,7 +99,7 @@ const Apointment = () => {
   return (
     <div className="common md:flex gap-10 items-center mb-[60px]">
       <Image
-        src="https://askproject.net/meddic/wp-content/uploads/sites/156/2023/10/team-of-doctors-discussing-something-at-hospital-c-FHAY6CS.jpg"
+        src="https://img.freepik.com/free-photo/beautiful-young-sports-people-are-holding-bottles-water-smiling-during-break_496169-2696.jpg"
         alt="Picture of the author"
         width={500}
         height={500}
@@ -103,30 +115,31 @@ const Apointment = () => {
           Book Your Appointment
         </p>
         <p className="md:w-[500px] text-gray-[400px] font-poppins text-gray-500">
-          The benefits of MEDDPICC are that it allows sellers to quickly qualify
+          The benefits of Furious Fitness are that it allows sellers to quickly qualify
           or disqualify opportunities.
         </p>
 
-        {/* apoinment form */}
-
+        {/* Appointment Form Start */}
         <Form submitHandler={bookingOnSubmit}>
-          <div className="my-[12px] flex items-center justify-center gap-2 w-full">
-            <div style={{ margin: "10px 0px", width: "50%" }}>
+          <div className="my-[12px] flex flex-col items-center justify-center gap-2 w-full">
+            <div style={{ margin: "10px 0px", width: "100%" }}>
               <FormDatePicker name="appointmentDate" label="Appointment Date" />
             </div>
-            <div style={{ margin: "10px 0px", width: "40%" }}>
+            <div style={{ margin: "10px 0px", width: "100%" }}>
               <FormSelectField
                 name="slot.slotId"
                 label="Booking Slot"
-                options={slotData?.map((c: any) => ({
+                required
+                options={slotData?.data?.map((c: any) => ({
                   label: c.slotTime,
                   value: c.slotId,
                 }))}
               />
             </div>
-            <div style={{ margin: "10px 0px", width: "40%" }}>
+            <div style={{ margin: "10px 0px", width: "100%" }}>
               <FormSelectField
                 name="service.serviceId"
+                required
                 label="Service Name"
                 options={serviceData?.map((c: any) => ({
                   label: c.serviceName,
@@ -145,4 +158,4 @@ const Apointment = () => {
   );
 };
 
-export default Apointment;
+export default Appointment;

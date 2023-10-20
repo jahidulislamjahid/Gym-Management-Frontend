@@ -1,36 +1,45 @@
-import { IBlogType } from "@/types/BlogTypes";
-import React from "react";
-import BlogCard from "./BlogCart";
-import { useGetBlogsQuery } from "@/redux/api/features/blogApi";
+"use client";
+
+import { useGetBlogQuery } from "@/Redux/features/blogApi/blogApi";
+import { IBlogType } from "@/types/BlogType";
+import { Skeleton } from "antd";
+import Link from "next/link";
+import BlogCard from "./blogCard";
 
 const BlogPage = () => {
-  // get data
-  const { data, isLoading } = useGetBlogsQuery(undefined);
+  const { data, isLoading } = useGetBlogQuery(undefined);
 
+  if (isLoading) {
+    return (
+      <div className="common grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 ">
+        <Skeleton active />
+        <Skeleton active />
+        <Skeleton active />
+      </div>
+    );
+  }
 
-
+  const blogData = data?.slice(0, 3);
   return (
     <div className="common mb-[60px]">
       {/* blog news */}
-
       <div className="w-full flex justify-between items-center mb-[100px]">
         <div>
           <p className="text-primary md:text-[20px] text-[16px] font-semibold">
             BLOG NEWS
           </p>
           <p className="font-poppins md:text-[45px] text-[35px] md:w-[550px]">
-            Articles From Meddic
+            Articles From Fitness
           </p>
         </div>
-        <div>
+        <Link href={"/blogs"}>
           <button className="appointmentButton">More Article</button>
-        </div>
+        </Link>
       </div>
 
       {/* blogs */}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5 ">
-        {data?.map((blog: any) => (
+        {blogData?.map((blog: IBlogType) => (
           <BlogCard key={blog.blogId} blog={blog} />
         ))}
       </div>

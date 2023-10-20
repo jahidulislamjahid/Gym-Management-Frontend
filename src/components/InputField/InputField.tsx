@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 
@@ -47,27 +48,43 @@ const InputField = ({
           disabled={disabled}
           defaultValue={defaultValue ? defaultValue : null}
           /* onChange={onChange ? onChange : () => {}} */
-          className={`${customClass
+          className={`${
+            customClass
               ? customClass
               : `${errors?.name ? "input_text2" : "input_text"}`
-            }`}
+          }`}
           {...register(name ? name : "noName", {
             required: required ? true : false,
+            minLength:
+              type === "password"
+                ? {
+                    value: 8,
+                    message: "Need at least 8 characters",
+                  }
+                : undefined,
+            pattern:
+              type === "email"
+                ? {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "Invalid email address.",
+                  }
+                : undefined,
           })}
         />
       ) : (
         <input
           type={type ? type : "text"}
           placeholder={placeholder}
-          className={`${customClass
+          className={`${
+            customClass
               ? customClass
               : `${errors?.name ? "input_text2" : "input_text"}`
-            }`}
+          }`}
           name={name}
           value={value}
           disabled={disabled}
           defaultValue={defaultValue ? defaultValue : null}
-          onChange={onChange ? onChange : () => { }}
+          onChange={onChange ? onChange : () => {}}
           required={required ? true : false}
         />
       )}
